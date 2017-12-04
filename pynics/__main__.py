@@ -30,7 +30,7 @@ def nics_buildup(args=None):
     nfile = nicsfile(args.seedname + '.nicslist')
 
     try:
-        fracpoints = np.dot(nfile.nics_points_frac, cell.T)
+        fracpoints = np.dot(nfile.nics_points_frac, cell)
     except TypeError:
         fracpoints = None
     abspoints = nfile.nics_points_abs
@@ -53,8 +53,12 @@ def nics_buildup(args=None):
 
             # Print output
             outnics.write('Point {0}_{1}:\n'.format(ptype, i+1))
+            outnics.write('Coordinates: {0} {1} {2}\n'.format(*p))
+            outnics.write('NICS isotropy: {0} ppm\n'.format(np.trace(nics.nics)/3.0))
+            outnics.write('NICS+chi isotropy: {0} ppm\n'.format(np.trace(nics.nics_plus_chi)/3.0))
             outnics.write('NICS tensor:\n{0}\n'.format(nics.nics))
             outnics.write('NICS+chi tensor:\n{0}\n'.format(nics.nics_plus_chi))
+            outnics.write('\n------\n')
 
             # For buildup, let's diagonalize them
             all_evals = np.array([np.linalg.eigh((nb+nb.T)/2.0)[0]
