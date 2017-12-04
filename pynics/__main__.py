@@ -49,7 +49,7 @@ def nics_buildup(args=None):
             continue
         for i, p in enumerate(plist):
             nics = ncomp.get_nics(p)
-            rrange, nbuild = ncomp.get_nics_buildup(p)
+            rrange, nbuild = ncomp.get_nics_buildup(p, args.R, args.n)
 
             # Print output
             outnics.write('Point {0}_{1}:\n'.format(ptype, i+1))
