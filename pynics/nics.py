@@ -21,7 +21,7 @@ class NicsCompute(object):
         # Grab the current file, compute grid etc.
         self._current = current
         self._cell = cell
-        self._V = np.linalg.det(cell)
+        self._V = abs(np.linalg.det(cell))
 
         self._grid_shape = self._current.grid
         self._grid_npoints = np.prod(self._grid_shape)
