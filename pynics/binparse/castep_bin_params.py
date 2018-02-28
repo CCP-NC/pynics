@@ -53,6 +53,8 @@ def cbin_parameters_parse(binfile, param_store, curr_version):
                             if len(param_store[p['name']]) == 1:
                                 param_store[p['name']] = param_store[
                                     p['name']][0]
+                        print(p['name'])
+                        print(param_store[p['name']])
                 else:
                     try:
                         hv["else"](binfile, param_store)
@@ -63,6 +65,8 @@ def cbin_parameters_parse(binfile, param_store, curr_version):
             # ...and finally read the end header
             end_header = binfile.read_string_record()
             if (end_header != 'END_' + header):
+                print(header)
+                print(end_header)
                 raise CastepBinError(
                     'Corrupted ' + header + ' block read from binfile')
 
@@ -280,6 +284,18 @@ castep_bin_plist = {
                     "type": "bool"
                 }
             ]
+        },
+        "9.0": {
+            "params": [
+                {
+                    "name": "bs_xc_definition_size",
+                    "type": "i"
+                },
+                {
+                    "name": "bs_xc_definition",
+                    "type": "str"
+                }
+            ]
         }
     },
     "DEVEL": {
@@ -466,6 +482,14 @@ castep_bin_plist = {
                 {
                     "name": "charge",
                     "type": "d"
+                }
+            ]
+        },
+        "9.0": {
+            "params": [
+                {
+                    "name": "spin_treatment",
+                    "type": "str"
                 }
             ]
         }
@@ -878,6 +902,46 @@ castep_bin_plist = {
                 {
                     "name": "spin_unit",
                     "type": "str"
+                }
+            ]
+        },
+        "9.0": {
+            "params": [
+                {
+                    "name": "write_otfg",
+                    "type": "bool"
+                }
+            ]
+        },
+        "17.0": {
+            "params": [
+                {
+                    "name": "write_cst_esp",
+                    "type": "bool",
+                },
+                {
+                    "name": "write_bands",
+                    "type": "bool",
+                },
+                {
+                    "name": "write_geom",
+                    "type": "bool",
+                }
+            ]
+        },
+        "18.0": {
+            "params": [
+                {
+                    "name": "verbosity",
+                    "type": "str"
+                },
+                {
+                    "name": "write_none",
+                    "type": "bool",
+                },
+                {
+                    "name": "write_md",
+                    "type": "bool",
                 }
             ]
         }
@@ -1356,6 +1420,14 @@ castep_bin_plist = {
                     "type": "bool"
                 }
             ]
+        },
+        "18.0": {
+            "params": [
+                {
+                    "name": "popn_write",
+                    "type": "str"
+                }
+            ]
         }
     },
     "PSPOT": {
@@ -1370,7 +1442,29 @@ castep_bin_plist = {
                     "type": "str"
                 }
             ]
+        },
+        "9.0": {
+            "params": [
+                {
+                    "name": "spin_orbit_coupling",
+                    "type": "bool"
+                }
+            ]
+        },
+        "18.0": {
+            "params": [
+                {
+                    "name": "spinor_spin_polarized",
+                    "type": "bool"
+                }
+            ]
         }
+
+        # write (dump_unit) current_params%spin_orbit_coupling
+        # !end of keywords for this block in version 9.0
+        # write (dump_unit) current_params%spinors_spin_polarized
+        # !end of keywords for this block in version 18.0
+
     },
     "SPECTRAL": {
         "2.0": {
@@ -1760,6 +1854,18 @@ castep_bin_plist = {
             "params": [
                 {
                     "name": "relativistic_treatment",
+                    "type": "str"
+                }
+            ]
+        },
+        "9.0": {
+            "params": [
+                {
+                    "name": "xc_definition_size",
+                    "type": "i"
+                },
+                {
+                    "name": "xc_definition",
                     "type": "str"
                 }
             ]
