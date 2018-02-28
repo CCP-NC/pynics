@@ -6,7 +6,10 @@ from __future__ import unicode_literals
 
 import math
 from pynics.binparse.forbinfile import RecordError
-from pynics.binparse import CastepBinError
+
+
+class CastepBinError(Exception):
+    pass
 
 
 def cbin_parameters_parse(binfile, param_store, curr_version):
@@ -169,6 +172,7 @@ def thermodynamics_v3_2_else(binfile, param_store):
     # Need to set dependent defaults
     param_store['thermo_t_spacing'] = param_store[
         'thermo_t_stop'] - param_store['thermo_t_start']
+
 
 castep_bin_plist = {
     "BASIS": {

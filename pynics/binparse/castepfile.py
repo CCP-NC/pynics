@@ -8,15 +8,12 @@ import itertools
 import collections
 import sys
 from pynics.binparse import ForBinFile, RecordError
-from pynics.binparse.castep_bin_params import cbin_parameters_parse
+from pynics.binparse.castep_bin_params import (cbin_parameters_parse,
+                                               CastepBinError)
 from pynics.binparse.castep_bin_cell import cbin_cell_parse
 from pynics.binparse.castep_bin_results import (cbin_elec_parse,
                                                 cbin_optional_parse,
                                                 cbin_results_parse)
-
-
-class CastepBinError(Exception):
-    pass
 
 
 class CastepBinFile(object):
@@ -117,6 +114,7 @@ class CastepBinFile(object):
             raise CastepBinError('End of file reached while parsing results')
 
         return results
+
 
 if __name__ == "__main__":
 
