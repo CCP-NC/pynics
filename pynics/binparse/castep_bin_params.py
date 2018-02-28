@@ -6,6 +6,7 @@ from __future__ import unicode_literals
 
 import math
 from pynics.binparse.forbinfile import RecordError
+from pynics.binparse import CastepBinError
 
 
 def cbin_parameters_parse(binfile, param_store, curr_version):
