@@ -41,7 +41,7 @@ class NicsCompute(object):
         self._Gnorm[0, 0, 0] = np.inf
 
         ctemp = self._Jfft*(1.0j)*4.0*np.pi/(self._Gnorm**2.0*self._V)
-        self._B = np.cross(self._Ggrid, ctemp, axisa=0, axisb=1, axisc=1)
+        self._B = -np.cross(self._Ggrid, ctemp, axisa=0, axisb=1, axisc=1)
 
     def get_nics(self, p0):
         """ Get NICS at point p0
@@ -57,7 +57,7 @@ class NicsCompute(object):
         nics_tens = (nics_tens*self._ppm).T
 
         # Now do the version with the chi term
-        B_G0 = 8.0/3.0*np.pi*self._chi/self._V
+        B_G0 = -8.0/3.0*np.pi*self._chi/self._V
         chi_contrib = np.real(B_G0*self._ppm)
         nics_tens_chi = nics_tens + chi_contrib
 
