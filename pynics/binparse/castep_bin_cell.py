@@ -4,95 +4,101 @@ from __future__ import division
 from __future__ import print_function
 from __future__ import unicode_literals
 
+
 def cbin_cell_parse(binfile, cell_store, curr_version):
 
     # Wrapper for the two parts of the parsing
     cbin_cell_parse_header(binfile, cell_store, curr_version)
     cbin_cell_parse_main(binfile, cell_store, curr_version)
 
+
 def cbin_cell_parse_header(binfile, cell_store, curr_version):
 
-	# Parse the first part of the cell file
+    # Parse the first part of the cell file
 
-	# We start out with a series of values in the format header -> array
+    # We start out with a series of values in the format header -> array
 
-	typelist = []
-	typelist.append(('CELL%REAL_LATTICE', 			'd'))
-	typelist.append(('CELL%RECIP_LATTICE', 			'd'))
-	typelist.append(('CELL%VOLUME', 				'd'))
-	typelist.append(('CELL%NUM_SPECIES', 			'i'))
-	typelist.append(('CELL%NUM_IONS', 				'i'))
-	typelist.append(('CELL%MAX_IONS_IN_SPECIES', 	'i'))
+    typelist = []
+    typelist.append(('CELL%REAL_LATTICE',           'd'))
+    typelist.append(('CELL%RECIP_LATTICE',          'd'))
+    typelist.append(('CELL%VOLUME',                 'd'))
+    typelist.append(('CELL%NUM_SPECIES',            'i'))
+    typelist.append(('CELL%NUM_IONS',               'i'))
+    typelist.append(('CELL%MAX_IONS_IN_SPECIES',    'i'))
 
-	for t in typelist:
-		header = binfile.read_string_record()
-		if (header != t[0]):
-			raise ValueError('Corrupted CELL block read from binfile')
-		tname = t[0].replace('CELL%', '').lower()
-		cell_store[tname] = binfile.read_record(t[1])
-		if len(cell_store[tname]) == 1:
-			cell_store[tname] = cell_store[tname][0]
+    for t in typelist:
+        header = binfile.read_string_record()
+        if (header != t[0]):
+            raise ValueError('Corrupted CELL block read from binfile')
+        tname = t[0].replace('CELL%', '').lower()
+        cell_store[tname] = binfile.read_record(t[1])
+        if len(cell_store[tname]) == 1:
+            cell_store[tname] = cell_store[tname][0]
 
-	# A couple more things...
-	reshape3_action(binfile, cell_store, curr_version, 'real_lattice')
-	reshape3_action(binfile, cell_store, curr_version, 'recip_lattice')
+    # A couple more things...
+    reshape3_action(binfile, cell_store, curr_version, 'real_lattice')
+    reshape3_action(binfile, cell_store, curr_version, 'recip_lattice')
+
 
 def cbin_cell_parse_main(binfile, cell_store, curr_version):
 
-	# Parse the second part of the cell file, where order isn't a given any more
+    # Parse the second part of the cell file, where order isn't a given any more
 
-	header = None
+    header = None
 
-	while True:
-		# First, read a header
-		header = binfile.read_string_record()
+    while True:
+        # First, read a header
+        header = binfile.read_string_record()
 
-		if header == 'END_UNIT_CELL':
-			break
+        if header == 'END_UNIT_CELL':
+            break
 
-		try:
-			c = castep_bin_clist[header]
-		except KeyError:
-			raise ValueError("Unrecognizable keyword found in CELL block of binfile")
+        try:
+            c = castep_bin_clist[header]
+        except KeyError:
+            raise ValueError("Unrecognizable keyword {0} ".format(header) +
+                             "found in CELL block of binfile")
 
-		if c["type"] == 'str':
-			cell_store[c["name"]] = binfile.read_string_record()
-		elif c["type"] == 'bool':
-			cell_store[c["name"]] = (binfile.read_record('i')[0] != 0)
-		else:
-			cell_store[c["name"]] = binfile.read_record(c["type"])
-			if len(cell_store[c["name"]]) == 1:
-				cell_store[c["name"]] = cell_store[c["name"]][0]
-		if c["action"] is not None:
-			c["action"](binfile, cell_store, curr_version, c["name"])
+        if c["type"] == 'str':
+            cell_store[c["name"]] = binfile.read_string_record()
+        elif c["type"] == 'bool':
+            cell_store[c["name"]] = (binfile.read_record('i')[0] != 0)
+        else:
+            cell_store[c["name"]] = binfile.read_record(c["type"])
+            if len(cell_store[c["name"]]) == 1:
+                cell_store[c["name"]] = cell_store[c["name"]][0]
+        if c["action"] is not None:
+            c["action"](binfile, cell_store, curr_version, c["name"])
 
-	# Now on to check that the correct block begins
-	header = binfile.read_string_record()
-	if (header != 'BEGIN_CELL_GLOBAL'):
-		raise ValueError("Corrupted CELL block in binfile")
+    # Now on to check that the correct block begins
+    header = binfile.read_string_record()
+    if (header != 'BEGIN_CELL_GLOBAL'):
+        raise ValueError("Corrupted CELL block in binfile")
 
-	while True:
-		# First, read a header
-		header = binfile.read_string_record()
+    while True:
+        # First, read a header
+        header = binfile.read_string_record()
 
-		if header == 'END_CELL_GLOBAL':
-			break
+        if header == 'END_CELL_GLOBAL':
+            break
 
-		try:
-			c = castep_bin_global_clist[header]
-		except KeyError:
-			raise ValueError("Unrecognizable keyword found in CELL block of binfile")
+        try:
+            c = castep_bin_global_clist[header]
+        except KeyError:
+            raise ValueError(
+                "Unrecognizable keyword found in CELL block of binfile")
 
-		if c["type"] == 'str':
-			cell_store[c["name"]] = binfile.read_string_record()
-		elif c["type"] == 'bool':
-			cell_store[c["name"]] = (binfile.read_record('i')[0] != 0)
-		else:
-			cell_store[c["name"]] = binfile.read_record(c["type"])
-			if len(cell_store[c["name"]]) == 1:
-				cell_store[c["name"]] = cell_store[c["name"]][0]
-		if c["action"] is not None:
-			c["action"](binfile, cell_store, curr_version, c["name"])
+        if c["type"] == 'str':
+            cell_store[c["name"]] = binfile.read_string_record()
+        elif c["type"] == 'bool':
+            cell_store[c["name"]] = (binfile.read_record('i')[0] != 0)
+        else:
+            cell_store[c["name"]] = binfile.read_record(c["type"])
+            if len(cell_store[c["name"]]) == 1:
+                cell_store[c["name"]] = cell_store[c["name"]][0]
+        if c["action"] is not None:
+            c["action"](binfile, cell_store, curr_version, c["name"])
+
 
 def int2float_action(binfile, cell_store, curr_version, cname):
     # An action to convert a vector from int to float.
@@ -102,25 +108,33 @@ def int2float_action(binfile, cell_store, curr_version, cname):
     except TypeError:   # It's a single value
         cell_store[cname] = float(cell_store[cname])
 
+
 def strsplit_action(binfile, cell_store, curr_version, cname):
-	# An action to split a long space-separated string in a tuple of strings
-	# Used for species_symbol, species_pot
-	cell_store[cname] = tuple([s.strip() for s in cell_store[cname].split()])
+        # An action to split a long space-separated string in a tuple of strings
+        # Used for species_symbol, species_pot
+    cell_store[cname] = tuple([s.strip() for s in cell_store[cname].split()])
+
 
 def reshape3_action(binfile, cell_store, curr_version, cname):
-	# An action used to reshape a one-dimensional array in a two dimensional matrix with 3-rows
-	# Used for parameters containing coordinates like real_lattice, ionic_positions etc.
-	cell_store[cname] = tuple([ tuple([cell_store[cname][i+j] for i in range(0, 3)]) for j in range(0, len(cell_store[cname]), 3)])
+    # An action used to reshape a one-dimensional array in a two dimensional matrix with 3-rows
+    # Used for parameters containing coordinates like real_lattice, ionic_positions etc.
+    cell_store[cname] = tuple([tuple([cell_store[cname][i+j] for i in range(0, 3)])
+                               for j in range(0, len(cell_store[cname]), 3)])
+
 
 def reshape4_action(binfile, cell_store, curr_version, cname):
-	# An action used to reshape a one-dimensional array in a two dimensional matrix with 4-rows
-	# Used for parameters containing orbital-related parameters like hubbard_u
-	cell_store[cname] = tuple([ tuple([cell_store[cname][i+j] for i in range(0, 4)]) for j in range(0, len(cell_store[cname]), 4)])
+    # An action used to reshape a one-dimensional array in a two dimensional matrix with 4-rows
+    # Used for parameters containing orbital-related parameters like hubbard_u
+    cell_store[cname] = tuple([tuple([cell_store[cname][i+j] for i in range(0, 4)])
+                               for j in range(0, len(cell_store[cname]), 4)])
+
 
 def reshape3by3_action(binfile, cell_store, curr_version, cname):
-	# An action used to reshape a one-dimensional array in a three dimensional matrix with 3x3 slices
-	# Used for parameters containing symmetry operations
-	cell_store[cname] = tuple([ tuple([ tuple([cell_store[cname][i+j+k] for i in range(0, 3)]) for j in range(0, 9, 3)]) for k in range(0, len(cell_store[cname]), 9)])
+    # An action used to reshape a one-dimensional array in a three dimensional matrix with 3x3 slices
+    # Used for parameters containing symmetry operations
+    cell_store[cname] = tuple([tuple([tuple([cell_store[cname][i+j+k] for i in range(0, 3)])
+                                      for j in range(0, 9, 3)]) for k in range(0, len(cell_store[cname]), 9)])
+
 
 castep_bin_clist = {
 

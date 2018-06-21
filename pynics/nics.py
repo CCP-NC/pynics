@@ -63,10 +63,19 @@ class NicsCompute(object):
 
         return NicsResult(nics_tens, chi_contrib, nics_tens_chi)
 
-    def get_nics_buildup(self, p0, Rmax=20, n=100):
+    def get_nics_buildup(self, p0, Rmax=20, Rmin=0, n=100, is_log=False):
         """ Get radial NICS buildup curve for a range of distances"""
 
-        rrange = np.linspace(0, Rmax, n)
+        Rmin = max(Rmin, 0)
+        Rmax = max(Rmax, 0)
+
+        if is_log:
+            # Rmin needs to be greater than 0
+            if Rmin == 0:
+                Rmin = Rmax/n
+            rrange = np.exp(np.linspace(np.log(Rmin), np.log(Rmax), n))
+        else:
+            rrange = np.linspace(Rmin, Rmax, n)
 
         expp0 = np.exp(1.0j*np.tensordot(p0, self._Ggrid, axes=(0, 0)))
 
@@ -88,3 +97,13 @@ class NicsCompute(object):
             nics_buildup.append(sigma)
 
         return rrange, np.array(nics_buildup)
+
+    def get_nics_envelope(self, p0):
+
+        expp0 = np.exp(1.0j*np.tensordot(p0, self._Ggrid, axes=(0, 0)))
+
+        Bsph = self._B*expp0[None, None]
+        Bsph *= self._ppm
+
+        return np.sum(np.abs(Bsph)*1.0/(self._Gnorm)[None, None, :, :, :],
+                      axis=(2, 3, 4))

@@ -605,7 +605,20 @@ castep_bin_plist = {
                     "type": "d"
                 }
             ]
+        },
+        "9.0": {
+            "params": [
+                {
+                    "name": "elnes_xc_definition_size",
+                    "type": "i"
+                },
+                {
+                    "name": "elnes_xc_definition",
+                    "type": "str"
+                }
+            ]
         }
+
     },
     "GA": {
         "2.0": {
@@ -1072,7 +1085,20 @@ castep_bin_plist = {
                     "type": "bool"
                 }
             ]
+        },
+        "9.0": {
+            "params": [
+                {
+                    "name": "magres_xc_definition_size",
+                    "type": "i"
+                },
+                {
+                    "name": "magres_xc_definition",
+                    "type": "str"
+                }
+            ]
         }
+
     },
     "MD": {
         "2.0": {
@@ -1241,6 +1267,30 @@ castep_bin_plist = {
                     "type": "i"
                 }
             ]
+        },
+        "9.0": {
+            "params": [
+                {
+                    "name": "md_hug_method",
+                    "type": "str"
+                },
+                {
+                    "name": "md_hug_t",
+                    "type": "d"
+                },
+                {
+                    "name": "md_hug_compression",
+                    "type": "d"
+                }
+            ]
+        },
+        "17.0": {
+            "params": [
+                {
+                    "name": "md_hug_dir",
+                    "type": "str"
+                }
+            ]
         }
     },
     "OPTICS": {
@@ -1257,6 +1307,18 @@ castep_bin_plist = {
             "params": [
                 {
                     "name": "optics_xc_functional",
+                    "type": "str"
+                }
+            ]
+        },
+        "9.0": {
+            "params": [
+                {
+                    "name": "optics_xc_definition_size",
+                    "type": "i"
+                },
+                {
+                    "name": "optics_xc_definition",
                     "type": "str"
                 }
             ]
@@ -1402,6 +1464,14 @@ castep_bin_plist = {
                     "type": "bool"
                 }
             ]
+        },
+        "17.2": {
+            "params": [
+                {
+                    "name": "raman_method",
+                    "type": "str"
+                }
+            ]
         }
     },
     "POPN": {
@@ -1506,7 +1576,19 @@ castep_bin_plist = {
                     "type": "bool"
                 }
             ]
-        }
+        },
+        "9.0": {
+            "params": [
+                {
+                    "name": "spectral_xc_definition_size",
+                    "type": "i"
+                },
+                {
+                    "name": "spectral_xc_definition",
+                    "type": "str"
+                }
+            ]
+        }        
     },
     "TDDFT": {
         "2.0": {
@@ -1556,7 +1638,24 @@ castep_bin_plist = {
                     "type": "str"
                 }
             ]
+        },
+        "9.0": {
+            "params": [
+                {
+                    "name": "tddft_xc_definition_size",
+                    "type": "i"
+                },
+                {
+                    "name": "tddft_xc_definition",
+                    "type": "str"
+                },
+                {
+                    "name": "tddft_position_method",
+                    "type": "str"
+                }
+            ]
         }
+
     },
     "THERMODYNAMICS": {
         "2.0": {

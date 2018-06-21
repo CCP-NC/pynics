@@ -20,9 +20,15 @@ def nics_buildup(args=None):
     parser = ap.ArgumentParser()
     parser.add_argument('seedname', type=str, default=None)
     parser.add_argument('-R', type=float, default=10, help="Max radius")
+    parser.add_argument('-minR', type=float, default=0, help="Min radius")
     parser.add_argument('-n', type=int, default=100, help="Number of points")
+    parser.add_argument('-log', action='store_true', default=False,
+                        help="Use a logarithmic grid")
     parser.add_argument('-cfile', type=str, default='current.dat',
                         help="Name of current file")
+    parser.add_argument('-out', type=str, default=None,
+                        help=("Prefix for output file names "
+                              "(default is the seedname)"))
     args = parser.parse_args()
 
     cfile = CurrentFile(args.cfile)
@@ -42,20 +48,27 @@ def nics_buildup(args=None):
         'abs': abspoints
     }
 
-    outnics = open(args.seedname + '_nics.txt', 'w')
+    outname = args.seedname if args.out is None else args.out
+
+    outnics = open(outname + '_nics.txt', 'w')
 
     for ptype, plist in allpoints.iteritems():
         if plist is None:
             continue
         for i, p in enumerate(plist):
             nics = ncomp.get_nics(p)
-            rrange, nbuild = ncomp.get_nics_buildup(p, args.R, args.n)
+            rrange, nbuild = ncomp.get_nics_buildup(p, Rmax=args.R, n=args.n,
+                                                    Rmin=args.minR,
+                                                    is_log=args.log)
 
             # Print output
             outnics.write('Point {0}_{1}:\n'.format(ptype, i+1))
             outnics.write('Coordinates: {0} {1} {2}\n'.format(*p))
-            outnics.write('NICS isotropy: {0} ppm\n'.format(np.trace(nics.nics)/3.0))
-            outnics.write('NICS+chi isotropy: {0} ppm\n'.format(np.trace(nics.nics_plus_chi)/3.0))
+            outnics.write('NICS isotropy: {0} ppm\n'.format(
+                np.trace(nics.nics)/3.0))
+            outnics.write(
+                'NICS+chi isotropy: {0} ppm\n'.format(
+                    np.trace(nics.nics_plus_chi)/3.0))
             outnics.write('NICS tensor:\n{0}\n'.format(nics.nics))
             outnics.write('NICS+chi tensor:\n{0}\n'.format(nics.nics_plus_chi))
             outnics.write('\n------\n')
@@ -67,7 +80,7 @@ def nics_buildup(args=None):
             iso = np.average(all_evals, axis=1)
             aniso = _anisotropy(all_evals)
             asymm = _asymmetry(all_evals)
-            np.savetxt(args.seedname + '_{0}_{1}_nicsbuild.dat'.format(ptype,
+            np.savetxt(outname + '_{0}_{1}_nicsbuild.dat'.format(ptype,
                                                                        i+1),
                        np.array([rrange, iso, aniso, asymm]).T)
 
