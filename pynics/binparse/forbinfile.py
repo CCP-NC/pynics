@@ -33,10 +33,9 @@ class ForBinFile(object):
         except IOError:
             raise ValueError("File " + fname + " not found")
 
-        try:
-            assert(endianness in ('>', '<'))
+        if endianness in ('>', '<'):
             self.endianness = endianness
-        except AssertionError:
+        else:
             raise ValueError("Invalid endianness value")
 
     def rewind(self):
