@@ -52,7 +52,7 @@ def nics_buildup(args=None):
 
     outnics = open(outname + '_nics.txt', 'w')
 
-    for ptype, plist in allpoints.iteritems():
+    for ptype, plist in allpoints.items():
         if plist is None:
             continue
         for i, p in enumerate(plist):

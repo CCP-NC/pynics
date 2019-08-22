@@ -7,6 +7,7 @@ from __future__ import division
 from __future__ import print_function
 from __future__ import unicode_literals
 
+import io
 import struct
 
 
@@ -28,7 +29,7 @@ class ForBinFile(object):
     def __init__(self, fname, endianness):
 
         try:
-            self.rawfile = open(fname, 'r')
+            self.rawfile = io.open(fname, 'rb')
         except IOError:
             raise ValueError("File " + fname + " not found")
 

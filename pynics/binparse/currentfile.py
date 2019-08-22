@@ -51,7 +51,7 @@ class CurrentFile(object):
         while True:
             try:
                 # Avoid stripping spaces since we still need to unpack this
-                current_col = ''.join(self.binfile.read_record('c'))
+                current_col = b''.join(self.binfile.read_record('c'))
                 # First, read the first two values as integers
                 nx, ny = unpack('>ii', current_col[:8])
                 # Then check if they are present as indices of current
