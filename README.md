@@ -16,7 +16,7 @@ in the pynics folder.
 1. Run a Castep NMR calculation on the system of interest and store the currents in a binary file - this is done by using the 
 `MAGRES_WRITE_RESPONSE: TRUE` parameter in the `.param` file;
 2. Create a `.nicslist` file, formatted like the `.cell` file, with a single `NICS_POINTS_FRAC` block, listing the
-fractional coordinates of all points for which the NICS buildup functions are desired.
+fractional coordinates of all points for which the NICS buildup functions are desired, or a `NICS_POINTS_ABS` block, which can use cartesian coordinates.
 3. Run the command line tool:
 
     lorentz_buildup_nics <seedname>
