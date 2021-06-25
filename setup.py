@@ -5,7 +5,8 @@ setup(name='pynics',
       packages=find_packages(),
       install_requires=[
           'numpy',
-          'ase'
+          'ase',
+          'soprano>=0.8.10'
       ],      
       entry_points={
           'console_scripts': [
