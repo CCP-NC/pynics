@@ -12,7 +12,7 @@ from ase import io
 from pynics.nics import NicsCompute
 from pynics.freeform import nicsfile
 from pynics.binparse import CurrentFile
-from soprano.properties.nmr.utils import _haeb_sort, _anisotropy, _asymmetry
+from soprano.nmr.utils import _haeb_sort, _anisotropy, _asymmetry
 
 
 def nics_buildup(args=None):
