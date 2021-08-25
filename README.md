@@ -19,7 +19,7 @@ in the pynics folder.
 fractional coordinates of all points for which the NICS buildup functions are desired, or a `NICS_POINTS_ABS` block, which can use cartesian coordinates.
 3. Run the command line tool:
 
-    lorentz_buildup_nics <seedname>
+    `lorentz_buildup_nics <seedname>`
     
 with the seedname of the system, in the same folder as the Castep calculation.
 Use `lorentz_buildup_nics -h` for a list of additional command line parameters.
