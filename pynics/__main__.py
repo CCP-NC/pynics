@@ -57,10 +57,7 @@ def nics_buildup(args=None):
     for ptype, plist in allpoints.items():
         if plist is None:
             continue
-        
-        if (args.csv):
-            outnics.write("# point, NICS isotropy, NICS+chi isotropy\n")
-            
+
         for i, p in enumerate(plist):
             nics = ncomp.get_nics(p)
             rrange, nbuild = ncomp.get_nics_buildup(p, Rmax=args.R, n=args.n,
