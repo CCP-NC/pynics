@@ -29,8 +29,7 @@ def nics_buildup(args=None):
     parser.add_argument('-out', type=str, default=None,
                         help=("Prefix for output file names "
                               "(default is the seedname)"))
-    parser.add_argument('-csv', action='store_true', default=False,
-                        help="output NICS tensors in CSV format instead of table format")
+
     args = parser.parse_args()
 
     cfile = CurrentFile(args.cfile)
@@ -53,7 +52,8 @@ def nics_buildup(args=None):
     outname = args.seedname if args.out is None else args.out
 
     outnics = open(outname + '_nics.txt', 'w')
-
+    outcsv = open(outname + '_nics.csv', 'w')
+    
     for ptype, plist in allpoints.items():
         if plist is None:
             continue
@@ -65,19 +65,18 @@ def nics_buildup(args=None):
                                                     is_log=args.log)
 
             # Print output
-            if (args.csv):
-                outnics.write('%d, %f, %f\n' % (i+1, np.trace(nics.nics)/3.0, np.trace(nics.nics_plus_chi)/3.0))
-            else:
-                outnics.write('Point {0}_{1}:\n'.format(ptype, i+1))
-                outnics.write('Coordinates: {0} {1} {2}\n'.format(*p))
-                outnics.write('NICS isotropy: {0} ppm\n'.format(
-                    np.trace(nics.nics)/3.0))
-                outnics.write(
-                    'NICS+chi isotropy: {0} ppm\n'.format(
-                        np.trace(nics.nics_plus_chi)/3.0))
-                outnics.write('NICS tensor:\n{0}\n'.format(nics.nics))
-                outnics.write('NICS+chi tensor:\n{0}\n'.format(nics.nics_plus_chi))
-                outnics.write('\n------\n')
+            outcsv.write('%d, %f, %f\n' % (i+1, np.trace(nics.nics)/3.0, np.trace(nics.nics_plus_chi)/3.0))
+
+            outnics.write('Point {0}_{1}:\n'.format(ptype, i+1))
+            outnics.write('Coordinates: {0} {1} {2}\n'.format(*p))
+            outnics.write('NICS isotropy: {0} ppm\n'.format(
+                np.trace(nics.nics)/3.0))
+            outnics.write(
+                'NICS+chi isotropy: {0} ppm\n'.format(
+                    np.trace(nics.nics_plus_chi)/3.0))
+            outnics.write('NICS tensor:\n{0}\n'.format(nics.nics))
+            outnics.write('NICS+chi tensor:\n{0}\n'.format(nics.nics_plus_chi))
+            outnics.write('\n------\n')
 
             # For buildup, let's diagonalize them
             all_evals = np.array([np.linalg.eigh((nb+nb.T)/2.0)[0]
