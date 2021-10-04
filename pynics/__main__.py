@@ -7,6 +7,7 @@ from __future__ import unicode_literals
 import sys
 import numpy as np
 import argparse as ap
+import csv
 
 from ase import io
 from pynics.nics import NicsCompute
@@ -29,7 +30,8 @@ def nics_buildup(args=None):
     parser.add_argument('-out', type=str, default=None,
                         help=("Prefix for output file names "
                               "(default is the seedname)"))
-
+    parser.add_argument('-csv', action='store_true', default=False,
+                        help="Output NICS tensors in CSV format instead of table format")
     args = parser.parse_args()
 
     cfile = CurrentFile(args.cfile)
@@ -53,6 +55,7 @@ def nics_buildup(args=None):
 
     outnics = open(outname + '_nics.txt', 'w')
     outcsv = open(outname + '_nics.csv', 'w')
+    csvwriter = csv.writer(outcsv)
     
     for ptype, plist in allpoints.items():
         if plist is None:
@@ -65,7 +68,9 @@ def nics_buildup(args=None):
                                                     is_log=args.log)
 
             # Print output
-            outcsv.write('%d, %f, %f\n' % (i+1, np.trace(nics.nics)/3.0, np.trace(nics.nics_plus_chi)/3.0))
+            if (args.csv):
+                csvwriter.writerow([i+1, np.trace(nics.nics)/3.0, np.trace(nics.nics_plus_chi)/3.0])
+               
 
             outnics.write('Point {0}_{1}:\n'.format(ptype, i+1))
             outnics.write('Coordinates: {0} {1} {2}\n'.format(*p))
@@ -90,3 +95,4 @@ def nics_buildup(args=None):
                        np.array([rrange, iso, aniso, asymm]).T)
 
     outnics.close()
+    outcsv.close()
