@@ -54,8 +54,9 @@ def nics_buildup(args=None):
     outname = args.seedname if args.out is None else args.out
 
     outnics = open(outname + '_nics.txt', 'w')
-    outcsv = open(outname + '_nics.csv', 'w')
-    csvwriter = csv.writer(outcsv)
+    if (args.csv):
+        outcsv = open(outname + '_nics.csv', 'w')
+        csvwriter = csv.writer(outcsv)
     
     for ptype, plist in allpoints.items():
         if plist is None:
@@ -95,4 +96,4 @@ def nics_buildup(args=None):
                        np.array([rrange, iso, aniso, asymm]).T)
 
     outnics.close()
-    outcsv.close()
+    if (args.csv): outcsv.close()
