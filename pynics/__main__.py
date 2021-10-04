@@ -31,7 +31,7 @@ def nics_buildup(args=None):
                         help=("Prefix for output file names "
                               "(default is the seedname)"))
     parser.add_argument('-csv', action='store_true', default=False,
-                        help="Output NICS tensors in CSV format instead of table format")
+                        help="Output NICS tensors in CSV format")
     args = parser.parse_args()
 
     cfile = CurrentFile(args.cfile)
