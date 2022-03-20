@@ -27,21 +27,22 @@ Use `lorentz_buildup_nics -h` for a list of additional command line parameters.
 #### How to use (nicsanalyse)
 
 1. A single unit cell of the system of interest should be geometry optimized using Castep.
-2. This unit cell should then be propagated to a supercell such that there is a separation $>10\\A$ between a central molecule and the next cell.
+2. This unit cell should then be propagated to a supercell such that there is a separation > 10 Å between a central molecule and the next cell.
 3. The `splitcell` utility can then be run on this, with the following options
 
 ```
-python splitcell.py 	-struct <structure file> \
+splitcell 	-struct <structure file> \
 				-onemol <onemol output file> \
 				-nomol <nomol output file> \
 				-supercell <supercell output file> \
-				-nicslist <file to output nicslist> 
+				-nicslist <file to output nicslist>
 ```
+
 4. The output cell files should then have Castep GIPAW calculations done performed on them, following the same steps as above for Pynics (e.g., pass the `MAGRES_WRITE_RESPONSE:True` parameter). The `.nicslist` should be the output nicslist of `splitcell.py`.
 5. On the resulting current files, run the `nicsanalyse` utility as
 
 ```
-python nicsanalyse.py -nicslist <path to nicslist> \
+nicsanalyse        -nicslist <path to nicslist> \
                       -nomol_current <path to nomol current> \
                       -nomol_magres <path to nomol magres> \
                       -onemol_current <path to onemol current> \
@@ -49,4 +50,4 @@ python nicsanalyse.py -nicslist <path to nicslist> \
                       -supercell_current <path to supercell current> \ 
                       -supercell_magres <path to supercell magres> \
                       -output <output file> 
-                      ```
+```
