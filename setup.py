@@ -10,7 +10,9 @@ setup(name='pynics',
       ],      
       entry_points={
           'console_scripts': [
-              'lorentz_buildup_nics = pynics.__main__:nics_buildup'
+              'lorentz_buildup_nics = pynics.__main__:nics_buildup',
+              'nicsanalyse = pynics.nicsanalyse:nics_analyse',
+              'splitcell = pynics.splitcell:split_cell'
           ]
       },
       include_package_data=True,
