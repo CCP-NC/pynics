@@ -10,7 +10,6 @@ from pynics.freeform import nicsfile
 from pynics.binparse import CurrentFile
 from soprano.nmr.utils import _haeb_sort, _anisotropy, _asymmetry
 from soprano.properties.nmr import *
-import matplotlib.pyplot as plt
 import gc
 
 
@@ -166,6 +165,7 @@ def nics_analyse(args=None):
 								a_nomol['nics']['nics+chi'], delta_mol_cryst, nics_contrib, electronic_structure))
 
 			if (args.buildup == True):
+				import matplotlib.pyplot as plt
 				fig, ax = plt.subplots(1,1, sharex='col')
 				fig.set_size_inches(6,4)
 				ax.spines["top"].set_visible(False)    
