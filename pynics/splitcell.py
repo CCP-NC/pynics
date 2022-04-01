@@ -11,15 +11,20 @@ import argparse as ap
 
 def split_cell(args=None):
 	parser = ap.ArgumentParser()
-	parser.add_argument('-struct', type=str, default=None, help='Geometry optimized supercell structure to be split.')
-	parser.add_argument('-onemol', type=str, default="onemol.cell", help='Output file for onemol structure.')
-	parser.add_argument('-nomol', type=str, default="nomol.cell", help='Output file for nomol structure.')
-	parser.add_argument('-supercell', type=str, default="supercell.cell", help='Output file for supercell structure.')
-	parser.add_argument('-nicslist', type=str, default="nicslist", help='File to output NICS list')
+	parser.add_argument('--struct', type=str, required=True, default=None, help='Geometry optimized supercell structure to be split.')
+	parser.add_argument('--onemol', type=str, default=None, help='Output file for onemol structure.')
+	parser.add_argument('--nomol', type=str, default=None, help='Output file for nomol structure.')
+	parser.add_argument('--supercell', type=str, default=None, help='Output file for supercell structure.')
+	parser.add_argument('--nicslist', type=str, required=True, default="nicslist", help='File to output NICS list')
 	args = parser.parse_args()
-	if (args.struct == None):
-		parser.print_help()
-		exit(-1)
+	
+	d = args.struct.split(".")
+	if (args.onemol is None):
+		args.onemol = "%s_onemol.cell" % (d[0])
+	if (args.nomol is None):
+		args.nomol = "%s_nomol.cell" % (d[0])
+	if (args.supercell is None):
+		args.supercell = "%s_supercell.cell" % (d[0])
 
 	struct = io.read(args.struct)
 	mols = Molecules.get(struct)

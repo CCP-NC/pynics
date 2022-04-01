@@ -58,25 +58,19 @@ Use `lorentz_buildup_nics -h` for a list of additional command line parameters.
 3. The `splitcell` utility can then be run on this, with the following options
 
 ```
-splitcell 	-struct <structure file> \
-		-onemol <onemol output file> \
-		-nomol <nomol output file> \
-		-supercell <supercell output file> \
-		-nicslist <file to output nicslist>
+splitcell 	--struct <structure file> \
+		--nicslist <file to output nicslist>
 ```
 
 4. The output cell files should then have Castep GIPAW calculations done performed on them, following the same steps as above for lorentz_buildup_nics (e.g., pass the `MAGRES_WRITE_RESPONSE:True` parameter). The `.nicslist` should be the output nicslist of `splitcell.py`.
 5. On the resulting current files, run the `nicsanalyse` utility as
 
 ```
-nicsanalyse        -nicslist <path to nicslist> \
-		   -nomol_current <path to nomol current> \
-		   -nomol_magres <path to nomol magres> \
-		   -onemol_current <path to onemol current> \
-		   -onemol_magres <path to onemol magres> \
-		   -supercell_current <path to supercell current> \ 
-		   -supercell_magres <path to supercell magres> \
-		   -output <output file> 
+nicsanalyse        --nicslist <path to nicslist> \
+		   --nomol_magres <path to nomol magres> \
+		   --onemol_magres <path to onemol magres> \
+		   --supercell_magres <path to supercell magres> \
+		   --output <output file> 
 ```
 
 ### Cite

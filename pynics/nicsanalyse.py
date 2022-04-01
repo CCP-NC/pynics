@@ -58,28 +58,35 @@ def get_label_of_atom_at_point(cell, p):
 #if __name__ == "__main__":
 def nics_analyse(args=None):
 	parser = ap.ArgumentParser()
-	parser.add_argument('-nicslist', type=str, default=None, help='nicslist file, containing sites of interest.')
+	parser.add_argument('--nicslist', required=True, type=str, default=None, help='nicslist file, containing sites of interest.')
 	#parser.add_argument('-cell', type=str, default=None, help='ONEMOL cell file.')
-	parser.add_argument('-nomol_current', type=str, default=None, help='NOMOL current file.')
-	parser.add_argument('-nomol_magres', type=str, default=None, help='NOMOL magres file.')
-	parser.add_argument('-onemol_current', type=str, default=None, help='ONEMOL current file.')
-	parser.add_argument('-onemol_magres', type=str, default=None, help='ONEMOL magres file.')
-	parser.add_argument('-supercell_current', type=str, default=None, help='SUPERCELL current file.')
-	parser.add_argument('-supercell_magres', type=str, default=None, help='SUPERCELL magres file.')
-	parser.add_argument('-output', type=str, default='output.txt', help='File to output data table into.')
-	parser.add_argument('-buildup', action='store_true', default=False, help='Calculate buildup curves.')
-	parser.add_argument('-R', type=float, default=10, help="Max radius.")
-	parser.add_argument('-minR', type=float, default=0, help="Min radius.")
-	parser.add_argument('-n', type=int, default=100, help="Number of points.")
-	parser.add_argument('-log', action='store_true', default=False,
+	parser.add_argument('--nomol_current', type=str, default=None, help='NOMOL current file.')
+	parser.add_argument('--nomol_magres', required=True, type=str, default=None, help='NOMOL magres file.')
+	parser.add_argument('--onemol_current', type=str, default=None, help='ONEMOL current file.')
+	parser.add_argument('--onemol_magres', required=True, type=str, default=None, help='ONEMOL magres file.')
+	parser.add_argument('--supercell_current', type=str, default=None, help='SUPERCELL current file.')
+	parser.add_argument('--supercell_magres', required=True, type=str, default=None, help='SUPERCELL magres file.')
+	parser.add_argument('--output', type=str, default='output.txt', help='File to output data table into.')
+	parser.add_argument('--buildup', action='store_true', default=False, help='Calculate buildup curves.')
+	parser.add_argument('--R', type=float, default=10, help="Max radius.")
+	parser.add_argument('--minR', type=float, default=0, help="Min radius.")
+	parser.add_argument('--n', type=int, default=100, help="Number of points.")
+	parser.add_argument('--log', action='store_true', default=False,
 		                    help="Use a logarithmic grid.")
 
-
 	args = parser.parse_args()
-	if (args.nicslist == None):
-		parser.print_help()
-		exit(-1)
+	
+	if (args.nomol_current is None):
+		head, _ = os.path.split(args.nomol_magres)
+		args.nomol_current = "%s/current.dat" % (head)
+	
+	if (args.onemol_current is None):
+		head, _ = os.path.split(args.onemol_magres)
+		args.onemol_current = "%s/current.dat" % (head)
 		
+	if (args.supercell_current is None):
+		head, _ = os.path.split(args.supercell_magres)
+		args.supercell_current = "%s/current.dat" % (head)
 	
 	# borrowed from pynics - read magres file to get cell parameters, and read nicsfile
 	cell_pars = io.read(args.onemol_magres).get_cell()
@@ -138,7 +145,9 @@ def nics_analyse(args=None):
 		gc.collect()
 		print("NEXT!")
 
-	
+	if (args.buildup == True):
+		import matplotlib.pyplot as plt
+
 	fp = open(args.output, "w")
 	fp.write("# Atom, SC Iso / ppm, Onemol Iso / ppm, Nomol NICS+Chi / ppm, Delta Mol / ppm, NICS / ppm, ES / ppm\n")
 	for ptype, plist in allpoints.items():
@@ -165,7 +174,6 @@ def nics_analyse(args=None):
 								a_nomol['nics']['nics+chi'], delta_mol_cryst, nics_contrib, electronic_structure))
 
 			if (args.buildup == True):
-				import matplotlib.pyplot as plt
 				fig, ax = plt.subplots(1,1, sharex='col')
 				fig.set_size_inches(6,4)
 				ax.spines["top"].set_visible(False)    
