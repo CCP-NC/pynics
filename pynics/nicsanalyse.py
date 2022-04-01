@@ -146,7 +146,7 @@ def nics_analyse(args=None):
 		print("NEXT!")
 
 	if (args.buildup == True):
-        import matplotlib.pyplot as plt
+		import matplotlib.pyplot as plt
 
 	fp = open(args.output, "w")
 	fp.write("# Atom, SC Iso / ppm, Onemol Iso / ppm, Nomol NICS+Chi / ppm, Delta Mol / ppm, NICS / ppm, ES / ppm\n")
