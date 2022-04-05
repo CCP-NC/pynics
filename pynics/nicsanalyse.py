@@ -60,6 +60,7 @@ def nics_analyse(args=None):
 	parser = ap.ArgumentParser()
 	parser.add_argument('--nicslist', required=True, type=str, default=None, help='nicslist file, containing sites of interest.')
 	#parser.add_argument('-cell', type=str, default=None, help='ONEMOL cell file.')
+	parser.add_argument('--ref', type=float, default=30.5, help="Reference shielding")
 	parser.add_argument('--nomol_current', type=str, default=None, help='NOMOL current file.')
 	parser.add_argument('--nomol_magres', required=True, type=str, default=None, help='NOMOL magres file.')
 	parser.add_argument('--onemol_current', type=str, default=None, help='ONEMOL current file.')
@@ -149,7 +150,7 @@ def nics_analyse(args=None):
 		import matplotlib.pyplot as plt
 
 	fp = open(args.output, "w")
-	fp.write("# Atom, SC Iso / ppm, Onemol Iso / ppm, Nomol NICS+Chi / ppm, Delta Mol / ppm, NICS / ppm, ES / ppm\n")
+	fp.write("# Atom, Supercell Isotropic CS / ppm, Onemol Isotropic Iso / ppm, Nomol NICS+Chi / ppm, Delta Mol / ppm, NICS / ppm, ES / ppm\n")
 	for ptype, plist in allpoints.items():
 		if plist is None:
 			continue
@@ -170,7 +171,7 @@ def nics_analyse(args=None):
 			delta_mol_cryst = a_onemol['iso_shift'] - a_supercell['iso_shift']
 			nics_contrib = a_nomol['nics']['nics+chi'] # may be nics+chi?
 			electronic_structure = delta_mol_cryst - nics_contrib
-			fp.write("%s, %f, %f, %f, %f, %f, %f\n" % (label, a_supercell['iso_shift'], a_onemol['iso_shift'],
+			fp.write("%s, %f, %f, %f, %f, %f, %f\n" % (label, args.ref - a_supercell['iso_shift'], args.ref - a_onemol['iso_shift'],
 								a_nomol['nics']['nics+chi'], delta_mol_cryst, nics_contrib, electronic_structure))
 
 			if (args.buildup == True):
