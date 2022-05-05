@@ -22,7 +22,7 @@ def get_shift_of_atom_at_point(magres, p):
 	mdist = 1e3
 	isotropic_shift = 0
 	shift_positions = zip(MSIsotropy.get(magres), magres.get_positions())
-	print(len(magres.get_positions()))
+	#print(len(magres.get_positions()))
 	for shift, pos in shift_positions:
 		dist = np.sqrt(np.sum(np.power(pos - p, 2)))
 		#print("(%f %f %f) (%f %f %f) %f" % (pos[0], pos[1], pos[2], p[0], p[1], p[2], dist))
@@ -103,6 +103,7 @@ def nics_analyse(args=None):
 		'frac': fracpoints,
 		'abs': abspoints
 	}
+	#print(abspoints)
 	# set up file parameters
 	nomol = {'currentfile':args.nomol_current}
 	onemol = {'currentfile':args.onemol_current}
@@ -116,6 +117,7 @@ def nics_analyse(args=None):
 	# this is done initially as the NicsCompute() and CurrentFile() objects are very memory
 	# intensive (such that I can't have them all loaded on my computer without it crashing).
 	for cell in (nomol, onemol, supercell):
+		print("Loading current data from %s..." % (cell['currentfile']))
 		current = CurrentFile(cell['currentfile'])
 		cnics = NicsCompute(current, cell_pars)
 		cell['points'] = {}
@@ -144,7 +146,7 @@ def nics_analyse(args=None):
 		del current
 		del cnics
 		gc.collect()
-		print("NEXT!")
+
 
 	if (args.buildup == True):
 		import matplotlib.pyplot as plt
