@@ -22,7 +22,7 @@ def get_shift_of_atom_at_point(magres, p):
 	mdist = 1e3
 	isotropic_shift = 0
 	shift_positions = zip(MSIsotropy.get(magres), magres.get_positions())
-	print(len(magres.get_positions()))
+	#print(len(magres.get_positions()))
 	for shift, pos in shift_positions:
 		dist = np.sqrt(np.sum(np.power(pos - p, 2)))
 		#print("(%f %f %f) (%f %f %f) %f" % (pos[0], pos[1], pos[2], p[0], p[1], p[2], dist))
@@ -60,6 +60,7 @@ def nics_analyse(args=None):
 	parser = ap.ArgumentParser()
 	parser.add_argument('--nicslist', required=True, type=str, default=None, help='nicslist file, containing sites of interest.')
 	#parser.add_argument('-cell', type=str, default=None, help='ONEMOL cell file.')
+	parser.add_argument('--ref', type=float, default=30.5, help="Reference shielding")
 	parser.add_argument('--nomol_current', type=str, default=None, help='NOMOL current file.')
 	parser.add_argument('--nomol_magres', required=True, type=str, default=None, help='NOMOL magres file.')
 	parser.add_argument('--onemol_current', type=str, default=None, help='ONEMOL current file.')
@@ -102,6 +103,7 @@ def nics_analyse(args=None):
 		'frac': fracpoints,
 		'abs': abspoints
 	}
+	#print(abspoints)
 	# set up file parameters
 	nomol = {'currentfile':args.nomol_current}
 	onemol = {'currentfile':args.onemol_current}
@@ -115,6 +117,7 @@ def nics_analyse(args=None):
 	# this is done initially as the NicsCompute() and CurrentFile() objects are very memory
 	# intensive (such that I can't have them all loaded on my computer without it crashing).
 	for cell in (nomol, onemol, supercell):
+		print("Loading current data from %s..." % (cell['currentfile']))
 		current = CurrentFile(cell['currentfile'])
 		cnics = NicsCompute(current, cell_pars)
 		cell['points'] = {}
@@ -143,13 +146,13 @@ def nics_analyse(args=None):
 		del current
 		del cnics
 		gc.collect()
-		print("NEXT!")
+
 
 	if (args.buildup == True):
 		import matplotlib.pyplot as plt
 
 	fp = open(args.output, "w")
-	fp.write("# Atom, SC Iso / ppm, Onemol Iso / ppm, Nomol NICS+Chi / ppm, Delta Mol / ppm, NICS / ppm, ES / ppm\n")
+	fp.write("# Atom, Supercell Isotropic CS / ppm, Onemol Isotropic Iso / ppm, Nomol NICS+Chi / ppm, Delta Mol / ppm, NICS / ppm, ES / ppm\n")
 	for ptype, plist in allpoints.items():
 		if plist is None:
 			continue
@@ -170,7 +173,7 @@ def nics_analyse(args=None):
 			delta_mol_cryst = a_onemol['iso_shift'] - a_supercell['iso_shift']
 			nics_contrib = a_nomol['nics']['nics+chi'] # may be nics+chi?
 			electronic_structure = delta_mol_cryst - nics_contrib
-			fp.write("%s, %f, %f, %f, %f, %f, %f\n" % (label, a_supercell['iso_shift'], a_onemol['iso_shift'],
+			fp.write("%s, %f, %f, %f, %f, %f, %f\n" % (label, args.ref - a_supercell['iso_shift'], args.ref - a_onemol['iso_shift'],
 								a_nomol['nics']['nics+chi'], delta_mol_cryst, nics_contrib, electronic_structure))
 
 			if (args.buildup == True):
