@@ -51,5 +51,5 @@ if __name__ == "__main__":
           'ase',
           'soprano>=0.8.10'
         ],
-        python_requires=">=3.6.*",
+        python_requires=">=3.6",
     )
